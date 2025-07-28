@@ -3,7 +3,7 @@ import { Hospital } from '../models/hospital';
 import { Images } from '../models/images';
 import { Location } from '../models/location'
 import { Appointments } from '../models/appointments'
-
+require('dotenv').config();
 
 export const PostgresDataSource = new DataSource({
     type: 'postgres',
