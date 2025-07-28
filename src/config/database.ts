@@ -1,4 +1,9 @@
 import { DataSource } from 'typeorm';
+import { Hospital } from '../models/hospital';
+import { Images } from '../models/images';
+import { Location } from '../models/location'
+import { Appointments } from '../models/appointments'
+
 
 export const PostgresDataSource = new DataSource({
     type: 'postgres',
@@ -8,7 +13,7 @@ export const PostgresDataSource = new DataSource({
     password: process.env.DB_PASSWORD || 'Mindbowser@123',
     database: process.env.DB_NAME || 'care_link',
     synchronize: true,
-    entities: [],
+    entities: [Hospital, Images, Location, Appointments],
 
 });
 
