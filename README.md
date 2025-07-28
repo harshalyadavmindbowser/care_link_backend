@@ -10,6 +10,10 @@ npm run dev
 # Build the project
 npm run build
 
+or 
+
+tsc
+
 # Start production server
 npm start
 
