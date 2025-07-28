@@ -16,5 +16,5 @@ export const PostgresDataSource = new DataSource({
     entities: [Hospital, Images, Location, Appointments],
 
 });
-
+console.log("process.env.DB_USERNAME",process.env.DB_USERNAME)
 export default PostgresDataSource;
