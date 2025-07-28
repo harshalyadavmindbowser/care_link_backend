@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-// import { IUser } from "../interfaces/user.interface";
+import { IUser } from "../interfaces/user.interface";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -20,10 +20,9 @@ export enum Gender {
 }
 
 @Entity("users")
-export class User {
-    
+export class Product implements IUser {
   @PrimaryGeneratedColumn("uuid")
-  uid!: string;
+  uuid!: string;
 
   @Column({ type: "varchar", length: 255, nullable: false })
   full_name!: string;
