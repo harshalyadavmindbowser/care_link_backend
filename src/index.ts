@@ -1,16 +1,36 @@
 import express from 'express';
 import cors from 'cors';
 import { PostgresDataSource } from './config/database';
+import { Request, Response } from "express";
+import { userRouter } from "./routes/user.routes";
+// import { movieRouter } from "./routes/movie.routes";
+import "reflect-metadata";
+import { request } from 'http';
+import { errorHandler } from './middleware/error.middleware';
 
 const app = express()
 app.use(express.json());
 app.use(cors());
 
+app.use("/auth", userRouter);
+
+app.get("/", (req: Request, res: Response) => {
+    res.status(505).json({ message: "Bad Request" });
+});
+
+app.use((req: Request, res: Response) => {
+    res.status(505).json({ message: "Bad Request" });
+})
+
+console.log("process.env.PORT,", process.env.PORT);
+
+
+app.use(errorHandler);
 
 PostgresDataSource.initialize().then(() => {
     console.log('Database connected successfully!');
     app.listen(process.env.PORT, () => {
-        console.log('server start on port no 3000');
+        console.log(`server start on port no ${process.env.PORT}`);
     });
 }).catch((error) => console.error('Error connecting to database:', error));
 

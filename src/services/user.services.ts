@@ -1,11 +1,10 @@
 // src/services/AuthService.ts
 import { PostgresDataSource } from '../config/database';
 import { User } from '../models/User';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import { encrypt } from '../helpers/encrypt';
 
 export class UerService {
-    // static async login(email: string, password_input: string) {
+    static async login(email: string, password_input: string) {
         const userRepository = PostgresDataSource.getRepository(User);
 
         //find user
@@ -16,7 +15,7 @@ export class UerService {
         }
 
         //compair password
-        const isPasswordValid = bcrypt.compareSync(user.hashed_password, password_input);
+        const isPasswordValid = encrypt.comparepassword(user.hashed_password, password_input);
 
         if (!isPasswordValid) {
             throw new Error('Invalid credentials');
@@ -24,10 +23,8 @@ export class UerService {
 
         const payload = { userId: user.uid };
 
-        const accessToken = jwt.sign(payload, process.env.JWT_SECRET || "da508688a1cd7f1dc50b26e711c9c4b38477963a7f57967afa102c9206b86520", { expiresIn: '20m' });
-        const refreshToken = jwt.sign(payload, process.env.JWT_SECRET || "da508688a1cd7f1dc50b26e711c9c4b38477963a7f57967afa102c9206b86520", { expiresIn: '2d' });
+        const accessToken = encrypt.generateToken(payload);
 
-
-        return { user, accessToken, refreshToken };
+        return { user, accessToken };
     }
 }
