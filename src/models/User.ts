@@ -21,8 +21,10 @@ export enum Gender {
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   uid!: string;
+
+  // @Column()
 
   @Column({ type: "varchar", length: 255, nullable: false })
   full_name!: string;
