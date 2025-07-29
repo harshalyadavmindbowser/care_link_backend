@@ -20,5 +20,6 @@ export const PostgresDataSource = new DataSource({
     //   synchronize: NODE_ENV === "dev" ? true : false,
 
 });
+console.log("ENV",process.env);
 
 export default PostgresDataSource;

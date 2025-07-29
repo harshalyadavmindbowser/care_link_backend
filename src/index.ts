@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Router } from 'express';
 import cors from 'cors';
 import { PostgresDataSource } from './config/database';
 import { Request, Response } from "express";
@@ -7,12 +7,14 @@ import { userRouter } from "./routes/user.routes";
 import "reflect-metadata";
 import { request } from 'http';
 import { errorHandler } from './middleware/error.middleware';
+import router from './routes/hospital.routes';
 
 const app = express()
 app.use(express.json());
 app.use(cors());
 
 app.use("/auth", userRouter);
+app.use("/hospitals", router)
 
 app.get("/", (req: Request, res: Response) => {
     res.status(505).json({ message: "Bad Request" });

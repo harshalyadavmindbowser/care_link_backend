@@ -48,3 +48,4 @@ export interface IUpdateUser {
   medical_specialty ?: string;
   license_no?: string;
 } 
+
