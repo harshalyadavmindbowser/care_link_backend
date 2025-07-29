@@ -1,4 +1,3 @@
-import { UUID } from "crypto"
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
 
 
@@ -11,16 +10,16 @@ enum AppointmentStatus {
 @Entity('appointments')
 export class Appointments {
     @PrimaryGeneratedColumn('uuid')
-    hid: UUID
+    hid: string
 
-    @Column()
-    patient_id: UUID
+    @Column('uuid')
+    patient_id: string
 
-    @Column()
-    provider_id: UUID
+    @Column('uuid')
+    provider_id: string
 
-    @Column()
-    hospital_id: UUID
+    @Column('uuid')
+    hospital_id: string
 
     @Column()
     appointment_date: Date

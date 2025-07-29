@@ -1,13 +1,12 @@
-import { UUID } from "crypto"
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
 
 @Entity('locations')
 export class Location {
     @PrimaryGeneratedColumn('uuid')
-    id: UUID
+    id: string
 
     @Column()
-    hospital_id: UUID;
+    hospital_id: string;
 
     @Column()
     hospital_name: string;
