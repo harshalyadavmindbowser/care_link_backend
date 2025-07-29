@@ -19,13 +19,17 @@ export enum Gender {
   BABY = "baby",
 }
 
-@Entity("users")
-export class Product {
+@Entity('users')
+export class User {
   @PrimaryGeneratedColumn("uuid")
   uid!: string;
 
   @Column({ type: "varchar", length: 255, nullable: false })
   full_name!: string;
+
+  @Column({ type: "varchar", length: 255, nullable: false })
+  email!: string;
+
 
   @Column({ type: "text", nullable: false })
   description!: string;
@@ -60,3 +64,5 @@ export class Product {
   @UpdateDateColumn()
   updatedAt!: Date;
 }
+
+
