@@ -1,29 +1,31 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
+  Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,
+  ManyToOne, JoinColumn
 } from 'typeorm';
-// import { IProduct } from '../interfaces/product.interface';
+import { User } from './User';
+import { Location } from './location';
 
 @Entity('addresses')
-export class Address  {
+export class Address {
+  @PrimaryGeneratedColumn('uuid')
+  id!: number;
 
-//       uuid uuid [primary key]
-//   u_id uuid
-//   location_id uuid
-//   street_address text
-
-  @PrimaryGeneratedColumn()
-  uuid!: number;
-
-  @Column({ type: 'text'})
+  @Column({ type: 'text' })
   street_address!: string;
 
-  @CreateDateColumn() 
+  @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  //relations
+
+  @ManyToOne(() => User, user => user.addresses)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Location, location => location.addresses)
+  @JoinColumn({ name: 'location_id' })
+  location: Location;
 } 

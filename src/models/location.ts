@@ -1,22 +1,40 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import {
+    Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne
+} from "typeorm";
+import { Hospital } from "./hospital";
+import { Address } from "./Address";
 
 @Entity('locations')
 export class Location {
     @PrimaryGeneratedColumn('uuid')
-    id: string
+    id: string;
 
     @Column()
-    hospital_id: string;
+    address: string;
 
     @Column()
-    hospital_name: string;
+    city: string;
 
     @Column()
-    images_url: string;
+    state: string;
 
-    @CreateDateColumn()
-    createdAt!: Date;
+    @Column()
+    country: string;
 
-    @UpdateDateColumn()
-    updatedAt!: Date;
+    @Column()
+    zip_code: string;
+
+    @Column()
+    latitude: number;
+
+    @Column()
+    longitude: number;
+
+    //relations
+
+    @OneToOne(() => Hospital, hospital => hospital.location, { cascade: true })
+    hospitals: Hospital;
+
+    @OneToMany(() => Address, address => address.location, { cascade: true })
+    addresses: Address[];
 }
