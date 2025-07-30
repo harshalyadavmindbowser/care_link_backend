@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
-
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm"
+import { Hospital } from "./hospital";
 @Entity('images')
 export class Images {
     @PrimaryGeneratedColumn('uuid')
@@ -19,4 +19,10 @@ export class Images {
 
     @UpdateDateColumn()
     updatedAt!: Date;
+
+    //relations
+
+    @ManyToOne(() => Hospital, hospital => hospital.images)
+    @JoinColumn({ name: 'hospital_id' })
+    hospital: Hospital;
 }
