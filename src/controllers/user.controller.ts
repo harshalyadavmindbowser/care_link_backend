@@ -14,7 +14,7 @@ export class UserController {
           .json({ message: "Both current and new password are required" });
       }
       const userRepository = PostgresDataSource.getRepository(User);
-      const user = await userRepository.findOneBy({ uid: userId });
+      const user = await userRepository.findOneBy({ id: userId });
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
