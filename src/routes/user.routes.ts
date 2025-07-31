@@ -7,7 +7,9 @@ const Router = express.Router();
 Router.post("/signup", AuthController.signup);
 
 //auth/signup
-Router.post('/login', AuthController.login);
+Router.post("/login", AuthController.login);
+
+//auth/change-password
+Router.post("/change-password/:uid", UserController.changePassword);
 
 export { Router as userRouter };
-
