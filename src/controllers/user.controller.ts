@@ -6,6 +6,6 @@ import { encrypt } from "../helpers/encrypt";
 
 
 export class UserController {
-
+//
 
 }
