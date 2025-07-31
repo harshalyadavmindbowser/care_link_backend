@@ -1,17 +1,19 @@
 import {
   Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,
-  ManyToOne, JoinColumn
+  ManyToOne, JoinColumn,
+  OneToOne
 } from 'typeorm';
 import { User } from './User';
 import { Location } from './location';
+import { Exclude } from 'class-transformer';
 
 @Entity('addresses')
 export class Address {
   @PrimaryGeneratedColumn('uuid')
-  id!: number;
+  id!: string;
 
-  @Column({ type: 'text' })
-  street_address!: string;
+  @Column()
+  address!: string;
 
   @CreateDateColumn()
   createdAt!: Date;
@@ -21,8 +23,9 @@ export class Address {
 
   //relations
 
-  @ManyToOne(() => User, user => user.addresses)
+  @OneToOne(() => User, user => user.address)
   @JoinColumn({ name: 'user_id' })
+  @Exclude()
   user: User;
 
   @ManyToOne(() => Location, location => location.addresses)

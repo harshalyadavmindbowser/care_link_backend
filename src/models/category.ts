@@ -1,8 +1,7 @@
 import {
-    Entity, PrimaryGeneratedColumn, Column, ManyToMany
+    Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable
 } from 'typeorm';
 import { Hospital } from './hospital';
-
 @Entity('categories')
 export class Category {
     @PrimaryGeneratedColumn('uuid')
@@ -15,5 +14,6 @@ export class Category {
     //relations
 
     @ManyToMany(() => Hospital, hospital => hospital.categories)
+    @JoinTable({ name: 'hospital_categories' })
     hospitals: Hospital[];
 }

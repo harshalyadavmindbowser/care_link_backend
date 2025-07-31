@@ -14,6 +14,6 @@ export class HospitalService {
   }
 
   static async getHospitalById(id: string) {
-    return await hospitalRepo.findOneBy({ hid: id });
+    return await hospitalRepo.findOneBy({ id: id });
   }
 }
