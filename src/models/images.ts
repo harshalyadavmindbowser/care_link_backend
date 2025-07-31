@@ -6,12 +6,6 @@ export class Images {
     id: string
 
     @Column()
-    hospital_id: string;
-
-    @Column()
-    hospital_name: string;
-
-    @Column()
     images_url: string;
 
     @CreateDateColumn()
@@ -23,6 +17,6 @@ export class Images {
     //relations
 
     @ManyToOne(() => Hospital, hospital => hospital.images)
-    @JoinColumn({ name: 'hospital_id' })
+    @JoinColumn()
     hospital: Hospital;
 }

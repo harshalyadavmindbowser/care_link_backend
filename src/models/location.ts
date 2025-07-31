@@ -10,21 +10,6 @@ export class Location {
     id: string;
 
     @Column()
-    address: string;
-
-    @Column()
-    city: string;
-
-    @Column()
-    state: string;
-
-    @Column()
-    country: string;
-
-    @Column()
-    zip_code: string;
-
-    @Column()
     latitude: number;
 
     @Column()
@@ -32,9 +17,9 @@ export class Location {
 
     //relations
 
-    @OneToOne(() => Hospital, hospital => hospital.location, { cascade: true })
+    @OneToOne(() => Hospital, hospital => hospital.location)
     hospitals: Hospital;
 
     @OneToMany(() => Address, address => address.location, { cascade: true })
-    addresses: Address[];
+    addresses: Address;
 }

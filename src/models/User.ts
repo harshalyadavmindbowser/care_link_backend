@@ -11,6 +11,7 @@ import { Hospital } from "./hospital";
 import { Appointments } from "./appointments";
 import { Address } from "./Address";
 // import { IUser } from "../interfaces/user.interface";
+import { Expose, Type, Exclude } from "class-transformer";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -28,8 +29,6 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  // @Column()
-
   @Column({ type: "varchar", length: 255, nullable: false })
   full_name!: string;
 
@@ -37,40 +36,45 @@ export class User {
   email!: string;
 
   @Column({ type: "text", nullable: false })
-  description!: string;
+  description?: string;
 
   @Column({ type: "text", nullable: true })
-  phone_no!: string;
+  phone_no?: string;
 
   @Column({ nullable: false })
+  @Exclude()
   hashed_password!: string;
 
+  @Column({ type: "boolean", default: false })
+  provider_status?: boolean;
+
   @Column()
-  dob!: Date;
+  dob?: Date;
 
   @Column({ type: "enum", enum: Gender, default: Gender.MALE })
-  gender!: Gender;
+  gender?: Gender;
 
   @Column({ type: "varchar", length: 255 })
-  insurance_provider!: string;
+  insurance_provider?: string;
 
   @Column({ type: "varchar", length: 255 })
-  policy_no!: string;
+  policy_no?: string;
 
   @Column({ type: "enum", enum: UserRole, default: UserRole.PROVIDER })
   role!: UserRole;
 
   @Column({ type: "varchar", length: 255 })
-  medical_specialty!: string;
+  medical_specialty?: string;
 
   @Column({ type: "varchar", length: 255 })
-  license_no!: string;
+  license_no?: string;
 
   @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
 
 
   //relations 
@@ -84,8 +88,9 @@ export class User {
   @OneToMany(type => Appointments, appointment => appointment.provider, { cascade: true })
   doctorAppointments?: Appointments[];
 
-  @OneToMany(() => Address, address => address.user, { cascade: true })
-  addresses?: Address[];
+  @OneToOne(type => Address, address => address.user)
+  @Expose()
+  address?: Address;
 }
 
 

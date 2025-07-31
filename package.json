@@ -21,7 +21,6 @@
     "@types/memory-cache": "^0.2.4",
     "@types/multer": "^2.0.0",
     "@types/node": "^16.11.10",
-    "concurrently": "^8.2.2",
     "ts-node": "10.7.0",
     "typescript": "^5.8.3"
   },

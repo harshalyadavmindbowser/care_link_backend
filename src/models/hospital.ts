@@ -33,7 +33,7 @@ export class Hospital {
 
     //relation 
 
-    @OneToOne(type => User, user => user.hospitals, { cascade: true })
+    @OneToOne(type => User, user => user.hospitals)
     @JoinColumn({ name: 'provider_id' })
     provider: User
 
@@ -47,7 +47,7 @@ export class Hospital {
     @OneToMany(() => Appointments, appointment => appointment.hospital, { cascade: true })
     appointments: Appointments[];
 
-    @ManyToMany(() => Category, category => category.hospitals, { cascade: true })
+    @ManyToMany(() => Category, category => category.hospitals)
     @JoinTable({ name: 'hospital_categories' })
     categories: Category[];
 
