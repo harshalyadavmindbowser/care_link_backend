@@ -15,7 +15,7 @@ export class Hospital {
     @Column()
     hospital_name: string
 
-    @Column('text')
+    @Column({ type: 'text', nullable: false })
     hospital_address: string
 
     @Column()
