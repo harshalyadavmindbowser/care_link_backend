@@ -3,6 +3,7 @@ import { Appointments, AppointmentStatus } from '../models/appointments';
 import { User } from '../models/User';
 import { Hospital } from '../models/hospital';
 import { CreateAppointmentDTO } from '../dto/appointments.dto';
+import { sendMail } from '../utils/mailer';
 
 export class AppointmentsService {
   private appointmentRepo = PostgresDataSource.getRepository(Appointments);
@@ -34,6 +35,44 @@ export class AppointmentsService {
       rejection_reason: status === AppointmentStatus.Cancelled ? rejection_reason : null
     });
 
-    return await this.appointmentRepo.save(appointment);
+    const savedAppointment = await this.appointmentRepo.save(appointment);
+
+    // ✅ Send email based on status
+    try {
+      if (status === AppointmentStatus.Approved) {
+        await sendMail({
+          to: patient.email,
+          subject: 'Confirmation of Your Appointment',
+          html: `
+            <p>Hello ${patient.full_name},</p>
+            <p>Your appointment is confirmed. Please find the details below:</p>
+            <ul>
+              <li><strong>Date:</strong> ${appointment_date}</li>
+              <li><strong>Time:</strong> ${appointment_time}</li>
+            </ul>
+            <p>We look forward to seeing you.</p>
+            <br/>
+            <p>Thank you,<br/><strong>Team CareLink</strong></p>
+          `
+        });
+      } else if (status === AppointmentStatus.Cancelled) {
+        await sendMail({
+          to: patient.email,
+          subject: 'Cancellation of Your Appointment',
+          html: `
+            <p>Hello ${patient.full_name},</p>
+            <p>We regret to inform you that your appointment on <strong>${appointment_date}</strong> at <strong>${appointment_time}</strong> has been rejected.</p>
+            <p>Reason: ${rejection_reason || 'Not provided'}</p>
+            <p>Please contact us to reschedule. We apologise for the inconvenience.</p>
+            <br/>
+            <p>Thank you,<br/><strong>Team CareLink</strong></p>
+          `
+        });
+      }
+    } catch (emailError) {
+      console.error('Error sending email:', emailError);
+    }
+
+    return savedAppointment;
   }
 }
