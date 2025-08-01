@@ -3,6 +3,7 @@ import cors from 'cors';
 import { PostgresDataSource } from './config/database';
 import { Request, Response } from "express";
 import { userRouter } from "./routes/user.routes";
+import appointmentsRouter from './routes/appointments.routes';
 // import { movieRouter } from "./routes/movie.routes";
 import "reflect-metadata";
 import { request } from 'http';
@@ -15,6 +16,7 @@ app.use(cors());
 
 app.use("/auth", userRouter);
 app.use("/hospitals", router)
+app.use('/appointments', appointmentsRouter); 
 
 app.get("/", (req: Request, res: Response) => {
     res.status(505).json({ message: "Bad Request" });

@@ -3,10 +3,10 @@ import { User } from "./User"
 import { Hospital } from "./hospital";
 
 
-enum AppointmentStatus {
+export enum AppointmentStatus {
     Pending = 'pending',
-    Confirmed = 'confirmed',
     Cancelled = 'cancelled',
+    Approved = 'approved'
 }
 
 @Entity('appointments')
