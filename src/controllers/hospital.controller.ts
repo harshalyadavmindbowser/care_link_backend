@@ -3,32 +3,26 @@ import { HospitalService } from "../services/hospital.services";
 
 export class HospitalController {
   static async createHospital(req: Request, res: Response) {
+    console.log("post-createHospital called");
+
     try {
-      const hospitalData = req.body;
-
-      console.log("here", hospitalData);
-
-      const { hospital_name, contact_info, provider_id } = req.body;
-
-      if (!hospital_name || !contact_info || !provider_id) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "Required fields missing: hospital_name, contact_info, provider_id",
-          });
+      if (!req.body.data) {
+        console.warn(" Missing data field in form data");
+        return res.status(400).json({ message: "Missing data field in form data" });
       }
 
-      const hospital = await HospitalService.createHospital(hospitalData);
+      console.log("Raw req.body.data:", req.body.data); //parsing json data from multipart form-data field
+      const data = JSON.parse(req.body.data);
+      const files = req.files as Express.Multer.File[] || [];
 
-      console.log("Hospital created successfully:", hospital);
+      const hospital = await HospitalService.createHospitalWithRelations(data, files);
 
-      return res
-        .status(201)
-        .json({ message: "Hospital created successfully", hospital });
+      return res.status(201).json({
+        message: "Hospital created successfully",
+        hospital,
+      });
     } catch (error) {
-      console.error("Error creating hospital:", error);
-
+      console.error("Error in createHospital:", error);
       return res.status(500).json({
         message: "Internal server error",
         error: (error as Error).message,
@@ -47,11 +41,13 @@ export class HospitalController {
   }
 
   static async getHospitalById(req: Request, res: Response) {
+    console.log(`[GET] /hospitals/${req.params.id} - getHospitalById called`);
     try {
       const { id } = req.params;
       const hospital = await HospitalService.getHospitalById(id);
 
       if (!hospital) {
+        console.warn(`Hospital not found with ID: ${id}`);
         return res.status(404).json({ message: "Hospital not found" });
       }
 
