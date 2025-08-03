@@ -31,7 +31,7 @@ export class UserService {
 
         const accessToken = encrypt.generateToken(payload);
         const userId= user.id
-        return { userId, accessToken };
+        return { userId, accessToken, user };
     }
 
     static async signup(userDto: UserSignupDTO) {
@@ -50,7 +50,7 @@ export class UserService {
         user.insurance_provider = userDto.insurance_provider;
         user.license_no = userDto.license_no;
         user.phone_no = userDto.phone_no;
-        user.provider_status = userDto.provider_status;
+        // user.provider_status = userDto.provider_status;
 
 
         const savedUser = await userRepository.save(user);
