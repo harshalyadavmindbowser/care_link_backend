@@ -37,7 +37,7 @@ export class AppointmentsService {
 
     const savedAppointment = await this.appointmentRepo.save(appointment);
 
-    // ✅ Send email based on status
+    //  Send email based on status
     try {
       if (status === AppointmentStatus.Approved) {
         await sendMail({
@@ -75,4 +75,26 @@ export class AppointmentsService {
 
     return savedAppointment;
   }
+
+  public async getAppointmentsById(userId: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId }, relations: ["patientAppointments", "patientAppointments.provider", "doctorAppointments", "doctorAppointments.patient"] })
+    if (!user) {
+      return {
+        message: "user not found"
+      }
+    }
+    if (user.role == "patient") {
+
+      return user;
+    }
+    else if (user.role === "provider") {
+      return user;
+    }
+    else {
+      return [];
+    }
+  }
+
+
+
 }

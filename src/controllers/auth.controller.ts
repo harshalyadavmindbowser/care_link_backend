@@ -68,6 +68,12 @@ export class AuthController {
             }
 
             const savedUser = await UserService.signup(dto);
+            if (!savedUser) {
+                return res.status(201).json({
+                    success: false,
+                    message: "USer Already Exist with this email"
+                })
+            }
 
             return res.status(201).json({
                 success: true,
