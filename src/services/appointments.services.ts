@@ -1,3 +1,4 @@
+import { validate as isUUID } from 'uuid';
 import PostgresDataSource from "../config/database";
 import { Appointments, AppointmentStatus } from '../models/appointments';
 import { User } from '../models/User';
@@ -21,6 +22,16 @@ export class AppointmentsService {
       rejection_reason
     } = dto;
 
+    if (!isUUID(patient_id)) {
+      throw new Error('Invalid patient_id format');
+    }
+    if (!isUUID(provider_id)) {
+      throw new Error('Invalid provider_id format');
+    }
+    if (!isUUID(hospital_id)) {
+      throw new Error('Invalid hospital_id format');
+    }
+    
     const patient = await this.userRepo.findOneByOrFail({ id: patient_id });
     const provider = await this.userRepo.findOneByOrFail({ id: provider_id });
     const hospital = await this.hospitalRepo.findOneByOrFail({ id: hospital_id });
@@ -37,7 +48,6 @@ export class AppointmentsService {
 
     const savedAppointment = await this.appointmentRepo.save(appointment);
 
-    // ✅ Send email based on status
     try {
       if (status === AppointmentStatus.Approved) {
         await sendMail({
