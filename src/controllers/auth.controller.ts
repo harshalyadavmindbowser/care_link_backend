@@ -35,9 +35,8 @@ export class AuthController {
                 return res.status(400).json({ message: "Email and password required" });
             }
 
-            const { userId, accessToken } = await UserService.login(email, password);
-
-            return res.status(200).json({ message: "Login successful", userId, accessToken });
+            const { userId, accessToken, user } = await UserService.login(email, password);
+            return res.status(200).json({ message: "Login successful", userId, accessToken,user });
 
         } catch (error) {
             console.error(error);

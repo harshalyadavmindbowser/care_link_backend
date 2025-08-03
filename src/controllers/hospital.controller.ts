@@ -11,19 +11,21 @@ export interface IValidationError {
 
 export class HospitalController {
   static async createHospital(req: Request, res: Response) {
-    console.log("post-createHospital called");
+    console.log("post-createHospital called",req.body.provider_id);
 
     try {
-      if (!req.body.data) {
+      if (!req.body) {
         console.warn(" Missing data field in form data");
         return res.status(400).json({ message: "Missing data field in form data" });
       }
 
-      console.log("Raw req.body.data:", req.body.data); //parsing json data from multipart form-data field
-      const data = JSON.parse(req.body.data);
+      console.log("Raw req.body.data:", req.body); //parsing json data from multipart form-data field
+      // const data = JSON.parse(req.body);
+      // console.log("dataddddd",data);
+      
       const files = req.files as Express.Multer.File[] || [];
 
-      const hospital = await HospitalService.createHospitalWithRelations(data, files);
+      const hospital = await HospitalService.createHospitalWithRelations(req.body, files);
 
       return res.status(201).json({
         message: "Hospital created successfully",
