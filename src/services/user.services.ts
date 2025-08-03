@@ -30,11 +30,19 @@ export class UserService {
         const payload = { userId: user.id };
 
         const accessToken = encrypt.generateToken(payload);
-        const userId= user.id
+        const userId = user.id
         return { userId, accessToken };
     }
 
     static async signup(userDto: UserSignupDTO) {
+
+        const existingUser = await userRepository.findOne({
+            where: { email: userDto.email }
+        });
+
+        if (existingUser) {
+            return false;
+        }
 
         const user = new User();
         const hashedPassword = await encrypt.encryptpass(userDto.password);
@@ -67,6 +75,5 @@ export class UserService {
             }
         }
         return savedUser;
-
     }
 }
