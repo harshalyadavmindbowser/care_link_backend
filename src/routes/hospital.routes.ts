@@ -7,5 +7,6 @@ const router = Router();
 router.post("/", upload.array("images", 5), HospitalController.createHospital);
 router.get("/", HospitalController.getAllHospitals);
 router.get("/:id", HospitalController.getHospitalById);
+router.post("/category", HospitalController.getHospitalsByCategory);
 
 export default router;
