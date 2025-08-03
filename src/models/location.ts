@@ -9,10 +9,10 @@ export class Location {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column('double precision')
     latitude: number;
 
-    @Column()
+    @Column('double precision')
     longitude: number;
 
     //relations

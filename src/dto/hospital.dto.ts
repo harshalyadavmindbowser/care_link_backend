@@ -1,4 +1,4 @@
-import { IsString, IsOptional, ValidateNested, IsNumber } from 'class-validator';
+import { IsString, IsOptional, ValidateNested, IsNumber, IsArray, ArrayNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class LocationDTO {
@@ -36,3 +36,14 @@ export class CreateHospitalDTO {
   @Type(() => AddressDTO)
   address: AddressDTO;
 }
+
+export class GetHospitalsByCategoryDto {
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  categoryNames: string[];
+}
+
+
+
+

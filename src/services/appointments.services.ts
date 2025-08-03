@@ -31,7 +31,7 @@ export class AppointmentsService {
     if (!isUUID(hospital_id)) {
       throw new Error('Invalid hospital_id format');
     }
-    
+
     const patient = await this.userRepo.findOneByOrFail({ id: patient_id });
     const provider = await this.userRepo.findOneByOrFail({ id: provider_id });
     const hospital = await this.hospitalRepo.findOneByOrFail({ id: hospital_id });
@@ -85,4 +85,26 @@ export class AppointmentsService {
 
     return savedAppointment;
   }
+
+  public async getAppointmentsById(userId: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId }, relations: ["patientAppointments", "patientAppointments.provider", "doctorAppointments", "doctorAppointments.patient"] })
+    if (!user) {
+      return {
+        message: "user not found"
+      }
+    }
+    if (user.role == "patient") {
+
+      return user;
+    }
+    else if (user.role === "provider") {
+      return user;
+    }
+    else {
+      return [];
+    }
+  }
+
+
+
 }
