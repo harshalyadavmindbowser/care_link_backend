@@ -62,7 +62,7 @@ export class UserSignupDTO {
     license_no?: string;
 
     @IsBoolean()
-    provider_status: boolean;
+    provider_status?: boolean;
 
     @IsOptional()
     @IsString()
