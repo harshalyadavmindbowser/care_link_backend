@@ -10,35 +10,65 @@ export interface IValidationError {
 }
 
 export class HospitalController {
-  static async createHospital(req: Request, res: Response) {
-    console.log("post-createHospital called",req.body.provider_id);
+static async createHospital(req: Request, res: Response) {
+  console.log("post-createHospital called");
+  console.log("Raw req.body:", req.body);
 
+  try {
+    const body = req.body;
+
+    // ✅ Safely parse stringified JSON fields
     try {
-      if (!req.body) {
-        console.warn(" Missing data field in form data");
-        return res.status(400).json({ message: "Missing data field in form data" });
+      if (typeof body.location === 'string') {
+        body.location = JSON.parse(body.location);
       }
-
-      console.log("Raw req.body.data:", req.body); //parsing json data from multipart form-data field
-      // const data = JSON.parse(req.body);
-      // console.log("dataddddd",data);
-      
-      const files = req.files as Express.Multer.File[] || [];
-
-      const hospital = await HospitalService.createHospitalWithRelations(req.body, files);
-
-      return res.status(201).json({
-        message: "Hospital created successfully",
-        hospital,
-      });
-    } catch (error) {
-      console.error("Error in createHospital:", error);
-      return res.status(500).json({
-        message: "Internal server error",
-        error: (error as Error).message,
+      if (typeof body.address === 'string') {
+        body.address = JSON.parse(body.address);
+      }
+      if (typeof body.categories === 'string') {
+        body.categories = JSON.parse(body.categories);
+      }
+    } catch (err) {
+      console.error("Invalid JSON format in one of the fields");
+      return res.status(400).json({
+        message: "Invalid JSON in 'location', 'address', or 'categories' field",
+        error: (err as Error).message,
       });
     }
+
+    // ✅ Ensure required nested fields are present
+    if (
+      !body.location?.latitude ||
+      !body.location?.longitude ||
+      !body.address?.address
+    ) {
+      return res.status(400).json({
+        message: "Missing required location or address fields",
+      });
+    }
+
+    // ✅ Get uploaded images (if any)
+    const files = req.files as Express.Multer.File[] || [];
+
+    // ✅ Pass parsed body and files to service
+    const hospital = await HospitalService.createHospitalWithRelations(body, files);
+
+    return res.status(201).json({
+      message: "Hospital created successfully",
+      hospital,
+    });
+
+  } catch (error) {
+    console.error("Error in createHospital:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: (error as Error).message,
+    });
   }
+}
+
+
+
 
   static async getAllHospitals(_req: Request, res: Response) {
     try {
