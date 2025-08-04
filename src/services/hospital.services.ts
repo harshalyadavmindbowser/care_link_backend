@@ -16,84 +16,107 @@ const imageRepo = PostgresDataSource.getRepository(Images);
 const userRepo = PostgresDataSource.getRepository(User);
 
 export class HospitalService {
-  static async createHospitalWithRelations(
-    data: any,
-    files: Express.Multer.File[]
-  ) {
+ static async createHospitalWithRelations(
+  data: any,
+  files: Express.Multer.File[]
+) {
+  console.log("createHospitalWithRelations called");
 
-    console.log("createHospitalWithRelations called");
-    try {
-      console.log("Incoming data:", JSON.stringify(data, null, 2));
+  try {
 
-      const location = locationRepo.create({ //saving location
-        latitude: data.location.latitude,
-        longitude: data.location.longitude,
-      });
-      await locationRepo.save(location);
-
-      if (!data.categories || !Array.isArray(data.categories)) {
-        throw new Error("Categories must be an array of category names");
-      }
-
-      const categories = data.categories;
-
-      const addedCategories = categories.map((name: string) => {
-        return categoryRepo.create({ name });
-      });
-
-      await categoryRepo.save(addedCategories);
-
-
-      const addressText = data?.address?.address?.trim(); //saving address
-      console.log("address:", addressText);
-
-      if (!addressText) {
-        throw new Error("hospital address is missing");
-      }
-
-      const address = addressRepo.create({
-        address: addressText,
-        location: location,
-      });
-      await addressRepo.save(address);
-
-      const provider = await userRepo.findOne({
-        where: { id: data.provider_id },
-      }); //find the provider entity
-
-      if (!provider) {
-        throw new Error("Provider not found with ID: " + data.provider_id);
-      }
-
-      const hospital = new Hospital(); //create and save hospital details
-      hospital.hospital_name = data.hospital_name;
-      hospital.contact_info = data.contact_info;
-      hospital.hospital_website = data.hospital_website;
-      hospital.hospital_address = addressText;
-      hospital.provider = provider;
-      hospital.location = location;
-      hospital.categories = addedCategories;
-
-      await hospitalRepo.save(hospital);
-
-      if (files && files.length > 0) { //saving images 
-        const imageEntities = files.map((file) =>
-          imageRepo.create({
-            images_url: `/uploads/images/${file.filename}`,
-            hospital: hospital,
-          })
-        );
-        await imageRepo.save(imageEntities);
-        console.log(`Saved ${files.length} image(s).`);
-      }
-
-      console.log("Hospital created successfully!");
-      return hospital;
-    } catch (error) {
-      console.error(" Error creating hospital:", error);
-      throw error;
+    if (typeof data.location === 'string') {
+      data.location = JSON.parse(data.location);
     }
+
+    if (typeof data.address === 'string') {
+      data.address = JSON.parse(data.address);
+    }
+
+    if (typeof data.categories === 'string') {
+      data.categories = JSON.parse(data.categories);
+    }
+  } catch (err) {
+    throw new Error("Failed to parse JSON fields: " + (err as Error).message);
   }
+
+  console.log("Parsed Data:", JSON.stringify(data, null, 2));
+
+  try {
+    if (
+      data.location?.latitude == null ||
+      data.location?.longitude == null
+    ) {
+      throw new Error("'location.latitude' and 'location.longitude' are required.");
+    }
+
+    const location = locationRepo.create({
+      latitude: data.location.latitude,
+      longitude: data.location.longitude,
+    });
+    await locationRepo.save(location);
+    console.log("Location saved");
+
+    if (!Array.isArray(data.categories) || data.categories.length === 0) {
+      throw new Error("categories must be a nonnul array.");
+    }
+
+    const addedCategories = data.categories.map((name: string) =>
+      categoryRepo.create({ name })
+    );
+    await categoryRepo.save(addedCategories);
+    console.log("🏷️ Categories saved");
+
+    const addressText = data?.address?.address?.trim();
+    if (!addressText) {
+      throw new Error("'address.address' field is required.");
+    }
+
+    const address = addressRepo.create({
+      address: addressText,
+      location: location,
+    });
+    await addressRepo.save(address);
+    console.log("Address saved");
+
+    const provider = await userRepo.findOne({ where: { id: data.provider_id } });
+    if (!provider) {
+      throw new Error("Provider not found with ID: " + data.provider_id);
+    }
+
+    const hospital = hospitalRepo.create({//saving hopsital
+      hospital_name: data.hospital_name,
+      contact_info: data.contact_info,
+      hospital_website: data.hospital_website,
+      hospital_address: addressText,
+      provider: provider,
+      location: location,
+      categories: addedCategories,
+    });
+
+    await hospitalRepo.save(hospital);
+    console.log("🏥 Hospital saved");
+
+    if (files && files.length > 0) {//saving images
+      const imageEntities = files.map((file) =>
+        imageRepo.create({
+          images_url: `/uploads/images/${file.filename}`,
+          hospital: hospital,
+        })
+      );
+      await imageRepo.save(imageEntities);
+      console.log(`Saved ${files.length} image(s).`);
+    }
+
+    console.log("Hospital created successfully!");
+    return hospital;
+
+  } catch (error) {
+    console.error("Error creating hospital:", error);
+    throw error;
+  }
+}
+
+
 
   static async getAllHospitals() {
     return await hospitalRepo.find({
