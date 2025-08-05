@@ -40,4 +40,6 @@ export class UserController {
         .json({ message: "Something went wrong", error: error.message });
     }
   }
+
+  
 }
