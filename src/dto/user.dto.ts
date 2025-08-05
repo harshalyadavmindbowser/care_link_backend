@@ -61,8 +61,12 @@ export class UserSignupDTO {
     @IsString()
     license_no?: string;
 
-    @IsBoolean()
-    provider_status: boolean;
+    @IsOptional()
+    @IsString()
+    img_url?: string;
+
+    @IsString()
+    provider_status?: string;
 
     @IsOptional()
     @IsString()

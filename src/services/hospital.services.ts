@@ -26,8 +26,8 @@ export class HospitalService {
       console.log("Incoming data:", JSON.stringify(data, null, 2));
 
       const location = locationRepo.create({ //saving location
-        latitude: data.location.latitude,
-        longitude: data.location.longitude,
+        latitude: data.latitude,
+        longitude: data.longitude,
       });
       await locationRepo.save(location);
 
@@ -97,19 +97,19 @@ export class HospitalService {
 
   static async getAllHospitals() {
     return await hospitalRepo.find({
-      relations: ["location", "images" , "categories"],
+      relations: ["location", "images", "categories"],
     });
   }
 
   static async getHospitalById(id: string) {
     return await hospitalRepo.findOne({
       where: { id },
-      relations: ["location", "images" , "provider" ],
+      relations: ["location", "images", "provider"],
     });
   }
 
 
-  static async getHospitalsByCategory(categoryNames: string[]){
+  static async getHospitalsByCategory(categoryNames: string[]) {
     const categories = await categoryRepo.find({
       where: { name: In(categoryNames) },
       relations: [
@@ -119,7 +119,7 @@ export class HospitalService {
         'hospitals.categories',
       ],
     });
-    
+
     if (!categories.length) {
       return [];
     }
@@ -127,5 +127,39 @@ export class HospitalService {
     const hospitals = categories.flatMap(category => category.hospitals)
     return hospitals;
   }
+
+  // static async getHospitalsByRadius(locationDto) {
+  //   const lat = locationDto.lat;
+  //   const long = locationDto.long;
+  //   const radius = locationDto.radius;
+
+  //   const locations = await locationRepo.find({
+  //     relations: ["hospitals"]
+  //   });
+
+  //   locations.map()
+
+  //   console.log("locations", locations);
+  //   return locations;
+  // }
+
+  // public getDistanceFromLatLonInKm(lat1: number, long1: number, lat2: number, long2: number) {
+  //   const R = 6371; // Radius of the earth in km
+  //   const dLat = deg2rad(lat2 - lat1);  // deg2rad below
+  //   const dLon = deg2rad(long2 - long1);
+  //   const a =
+  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  //     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+  //     Math.sin(dLon / 2) * Math.sin(dLon / 2)
+  //     ;
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   var d = R * c; // Distance in km
+  //   return d;
+  // }
+
+  // public deg2rad(deg: number) {
+  //   return deg * (Math.PI / 180)
+  // }
+
 
 }

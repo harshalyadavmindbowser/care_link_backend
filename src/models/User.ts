@@ -45,28 +45,31 @@ export class User {
   @Exclude()
   hashed_password!: string;
 
-  @Column({ type: "boolean", default: false })
+  @Column({ type: "boolean", default: false, nullable: true })
   provider_status?: boolean;
 
-  @Column({nullable:true })
+  @Column({ nullable: true })
   dob?: Date;
 
   @Column({ type: "enum", enum: Gender, default: Gender.MALE })
   gender?: Gender;
 
-  @Column({ type: "varchar", length: 255 ,nullable:true })
+  @Column({ type: "varchar", length: 255, nullable: true })
+  img_url?: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
   insurance_provider?: string;
 
-  @Column({ type: "varchar", length: 255, nullable:true  })
+  @Column({ type: "varchar", length: 255, nullable: true })
   policy_no?: string;
 
   @Column({ type: "enum", enum: UserRole, default: UserRole.PROVIDER })
   role!: UserRole;
 
-  @Column({ type: "varchar", length: 255,nullable:true })
+  @Column({ type: "varchar", length: 255, nullable: true })
   medical_specialty?: string;
 
-  @Column({ type: "varchar", length: 255, nullable:true  })
+  @Column({ type: "varchar", length: 255, nullable: true })
   license_no?: string;
 
   @CreateDateColumn()

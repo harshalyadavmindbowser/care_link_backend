@@ -36,7 +36,7 @@ export class AuthController {
             }
 
             const { userId, accessToken, user } = await UserService.login(email, password);
-            return res.status(200).json({ message: "Login successful", userId, accessToken,user });
+            return res.status(200).json({ message: "Login successful", userId, accessToken, user });
 
         } catch (error) {
             console.error(error);
@@ -51,7 +51,13 @@ export class AuthController {
 
     static async signup(req: Request, res: Response) {
         try {
+            console.log(req.body);
             const dto = plainToClass(UserSignupDTO, req.body);
+            const file = req.file;
+
+            if (file) {
+                dto.img_url = file.filename;
+            }
             const validationErrors: ValidationError[] = await validate(dto);
             if (validationErrors.length > 0) {
                 const errors: IValidationError[] = validationErrors.map((error) => ({

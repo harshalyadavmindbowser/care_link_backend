@@ -3,6 +3,7 @@ import { HospitalService } from "../services/hospital.services";
 import { GetHospitalsByCategoryDto } from "../dto/hospital.dto";
 import { plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
+import { LocationDTO } from "../dto/location.dto";
 
 export interface IValidationError {
   property: string;
@@ -11,7 +12,7 @@ export interface IValidationError {
 
 export class HospitalController {
   static async createHospital(req: Request, res: Response) {
-    console.log("post-createHospital called",req.body.provider_id);
+    console.log("post-createHospital called", req.body.provider_id);
 
     try {
       if (!req.body) {
@@ -22,7 +23,7 @@ export class HospitalController {
       console.log("Raw req.body.data:", req.body); //parsing json data from multipart form-data field
       // const data = JSON.parse(req.body);
       // console.log("dataddddd",data);
-      
+
       const files = req.files as Express.Multer.File[] || [];
 
       const hospital = await HospitalService.createHospitalWithRelations(req.body, files);
@@ -71,7 +72,7 @@ export class HospitalController {
 
   static async getHospitalsByCategory(req: Request, res: Response) {
     try {
-     
+
       const dto = plainToInstance(GetHospitalsByCategoryDto, req.body);
       const validationErrors: ValidationError[] = await validate(dto);
       if (validationErrors.length > 0) {
@@ -95,4 +96,32 @@ export class HospitalController {
       return res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  //   static async getHospitalsByRadiusDistance(req: Request, res: Response) {
+  //   try {
+  //     const dto = plainToInstance(LocationDTO, req.body);
+  //     const validationErrors: ValidationError[] = await validate(dto);
+  //     if (validationErrors.length > 0) {
+  //       const errors = validationErrors.map((error) => ({
+  //         property: error.property,
+  //         constraints: error.constraints || {},
+  //       }));
+  //       return res.status(400).json({
+  //         success: false,
+  //         message: 'Fetching hospitals by location failed',
+  //         error: 'Invalid input data',
+  //         validationErrors: errors,
+  //       });
+  //     }
+
+  //     const hospitals = await HospitalService.getHospitalsByRadius(dto);
+
+  //     return res.status(200).json(hospitals);
+  //   } catch (error) {
+  //     console.error("Error fetching hospitals by category:", error);
+  //     return res.status(500).json({ message: "Internal server error" });
+  //   }
+  // }
+
+
 }
