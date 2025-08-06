@@ -16,8 +16,6 @@ static async createHospital(req: Request, res: Response) {
 
   try {
     const body = req.body;
-
-    // ✅ Safely parse stringified JSON fields
     try {
       if (typeof body.location === 'string') {
         body.location = JSON.parse(body.location);
@@ -36,7 +34,6 @@ static async createHospital(req: Request, res: Response) {
       });
     }
 
-    // ✅ Ensure required nested fields are present
     if (
       !body.location?.latitude ||
       !body.location?.longitude ||
@@ -47,10 +44,8 @@ static async createHospital(req: Request, res: Response) {
       });
     }
 
-    // ✅ Get uploaded images (if any)
     const files = req.files as Express.Multer.File[] || [];
 
-    // ✅ Pass parsed body and files to service
     const hospital = await HospitalService.createHospitalWithRelations(body, files);
 
     return res.status(201).json({
